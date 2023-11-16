@@ -2,10 +2,10 @@
  * @param {string[]} strs
  * @return {string[][]}
  */
-var groupAnagrams = function (strs) {
+var groupAnagrams0 = function (strs) {
 	let output = [[]];
 	output[0].push(strs[0]);
-	
+
 
 
 	// loop over all strings
@@ -27,6 +27,30 @@ var groupAnagrams = function (strs) {
 		}
 	}
 	return output;
+};
+
+var groupAnagrams = function (strs) {
+    // Create a hashtable to store groups of anagrams
+    const anagramGroups = {};
+
+    // Loop over all strings
+    for (let i = 0; i < strs.length; i++) {
+        const word = strs[i];
+        const sortedWord = word.split('').sort().join('');
+
+        // Check if the sorted word is a key in the hashtable
+        if (anagramGroups[sortedWord]) {
+            anagramGroups[sortedWord].push(word);
+        } else {
+            // If not, create a new entry in the hashtable
+            anagramGroups[sortedWord] = [word];
+        }
+    }
+
+    // Convert the hashtable values to an array (the final result)
+    const output = Object.values(anagramGroups);
+
+    return output;
 };
 
 var isAnagram = function (input, test) {
