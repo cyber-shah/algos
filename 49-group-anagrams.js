@@ -6,8 +6,6 @@ var groupAnagrams0 = function (strs) {
 	let output = [[]];
 	output[0].push(strs[0]);
 
-
-
 	// loop over all strings
 	for (let i = 1; i < strs.length; i++) {
 		const word = strs[i];
