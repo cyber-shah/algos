@@ -18,16 +18,14 @@ public:
 
     // 1. heapify
     // 2. visit the node with the smallest value
-    vector<unordered_map<string, int>> neigh_list = {distances[src]};
+    vector<int> neigh_list = {src};
 
     while (!neigh_list.empty()) {
       // 2. get the smallest dist node
-      int temp = get_min_node(neigh_list);
-      int current_index = neigh_list[temp]["index"];
+      int current_index = get_min_node(neigh_list, distances);
 
       cout << current_index << endl;
-
-      neigh_list.erase(neigh_list.begin() + temp);
+      neigh_list.erase(neigh_list.begin() + current_index);
 
       cout << "printing neighbours of " << current_index << endl;
 
@@ -44,7 +42,7 @@ public:
           distances[neigh_index]["dist"];
           distances[neigh_index]["hops"] = distances[current_index]["hops"] + 1;
         }
-        neigh_list.push_back(neigh);
+        neigh_list.push_back(neigh["index"]);
       }
     }
 
@@ -52,18 +50,22 @@ public:
     return distances[dst]["dist"];
   }
 
-  int get_min_node(vector<unordered_map<string, int>> distance) {
+  int get_min_node(vector<int> neigh_list,
+                   vector<unordered_map<string, int>> distances) {
     int min_index = 99;
     int temp_dist = 1e9;
     cout << "contents of neigh_list" << endl;
-    for (auto &dict : distance) {
-      cout << dict["index"] << endl;
-      if (dict["dist"] < temp_dist) {
-        temp_dist = dict["dist"];
-        min_index = dict["index"];
+
+    // for each node in neigh_list
+    for (int node : neigh_list) {
+      cout << distances[node]["dist"] << endl;
+      if (distances[node]["dist"] < temp_dist) {
+        temp_dist = distances[node]["dist"];
+        min_index = node;
       }
     }
     cout << "returning " << min_index << endl;
+    cout << "with distance " << temp_dist << endl;
     return min_index;
   }
-}
+};
