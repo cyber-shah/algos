@@ -1,66 +1,69 @@
-class Graph {
-public:
-  int vertices;
-  vector<vector<pair<int, int>>> adjacencyList;
-
-  Graph(int vertices) {
-    this->vertices = vertices;
-    adjacencyList.resize(vertices);
-  }
-
-  void add_edge(int v, int w, int weight) {
-    adjacencyList[v].push_back({w, weight});
-  }
-
-  void print_graph() {
-    for (int i = 0; i < vertices; ++i) {
-      std::cout << "Adjacency list of vertex " << i << ": ";
-      for (const auto &neighbor : adjacencyList[i]) {
-        std::cout << "(" << neighbor.first << ", " << neighbor.second << ") ";
-      }
-      std::cout << std::endl;
-    }
-  }
-
-  vector<pair<int, int>> neighbours(int *node_index) {
-    return adjacencyList[node_index];
-  }
-};
-
 class Solution {
 public:
   int findCheapestPrice(int n, vector<vector<int>> &flights, int src, int dst,
                         int k) {
-    int main_array[n];
-    fill(main_array, main_array + n, 101);
-    main_array[src] = 0;
+    vector<vector<unordered_map<string, int>>> adjacencyList(n);
+    for (int i = 0; i < flights.size(); i++) {
+      unordered_map<string, int> list;
+      list["src"] = flights[i][0];
+      list["dest"] = flights[i][1];
+      list["dist"] = flights[i][2];
+      adjacencyList[flights[i][0]].push_back(list);
+    }
 
-    Graph *graph = build_graph(n, flights);
+    // in the format: {node, hops, distance to source}
+    vector<unordered_map<string, int>> distances(
+        n, {{"index", 0}, {"hops", 0}, {"dist", 1e9}});
+    distances[src]["dist"] = 0;
 
     // 1. heapify
-    priority_queue<int, vector<int>, greater<int>> min_heap(main_array,
-                                                            main_array + n);
-
     // 2. visit the node with the smallest value
-    int node_index = priority_queue.top();
+    vector<unordered_map<string, int>> neigh_list = {distances[src]};
 
-    // 3. visit all unvisited neighbours
-    vector<pair<int, int>> neighbours = graph.neighbours(&node_index);
+    while (!neigh_list.empty()) {
+      // 2. get the smallest dist node
+      int temp = get_min_node(neigh_list);
+      int current_index = neigh_list[temp]["index"];
 
-    // 4. calculate distance
+      cout << current_index << endl;
+
+      neigh_list.erase(neigh_list.begin() + temp);
+
+      cout << "printing neighbours of " << current_index << endl;
+
+      // 3. add all your neighbours to neigh_list
+      for (auto &neigh : adjacencyList[current_index]) {
+        cout << neigh["dest"] << endl;
+
+        int neigh_index = neigh["dest"];
+
+        // new distance = current -> neigh + dist to current
+        int new_distance = neigh["dist"] + distances[current_index]["dist"];
+        if (new_distance > distances[neigh_index]["dist"] &&
+            distances[current_index]["hops"] + 1 <= k) {
+          distances[neigh_index]["dist"];
+          distances[neigh_index]["hops"] = distances[current_index]["hops"] + 1;
+        }
+        neigh_list.push_back(neigh);
+      }
+    }
 
     // 5. update distance
-
-    // repeat until all nodes are visited
-    return 0;
+    return distances[dst]["dist"];
   }
 
-  Graph *build_graph(int n, vector<vector<int>> &flight) {
-    Graph graph(n);
-    for (int i = 0; i < flight.size(); i++) {
-      graph.add_edge(flight[i][0], flight[i][1], flight[i][2]);
+  int get_min_node(vector<unordered_map<string, int>> distance) {
+    int min_index = 99;
+    int temp_dist = 1e9;
+    cout << "contents of neigh_list" << endl;
+    for (auto &dict : distance) {
+      cout << dict["index"] << endl;
+      if (dict["dist"] < temp_dist) {
+        temp_dist = dict["dist"];
+        min_index = dict["index"];
+      }
     }
-    graph.print_graph();
-    return &graph;
+    cout << "returning " << min_index << endl;
+    return min_index;
   }
 }
