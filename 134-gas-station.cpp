@@ -35,17 +35,14 @@ public:
         currentStop++;
         currentStop = currentStop % gas.size();
         gasRemaning += gas[currentStop];
-
-        visitedSet.insert(currentStop);
         // make currentStop loop in that range
       }
 
       // if that doesn't work out, start from a new point which
       // is not between old start and current stop
       else {
-        start = currentStop + 1;
-        currentStop++;
-        currentStop = currentStop % gas.size();
+        start += 1;
+        currentStop = start;
         gasRemaning = gas[start];
 
         visitedSet.insert(currentStop);
